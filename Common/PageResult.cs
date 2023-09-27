@@ -1,0 +1,78 @@
+﻿namespace MyCloa.Common;
+
+/// <summary>
+/// 分页结果对象
+/// </summary>
+/// <typeparam name="TResult">分页数据明细类型</typeparam>
+/// <typeparam name="TSummary">汇总数据类型</typeparam>
+public class PageResult<TResult, TSummary> : PageResult<TResult>
+{
+    /// <summary>
+    /// 是否包括汇总数据
+    /// </summary>
+    public bool IncludeSummary { get; internal set; }
+    /// <summary>
+    /// 汇总数据
+    /// </summary>
+    public TSummary Summary { get; internal set; }
+}
+
+/// <summary>
+/// 分页结果数据
+/// </summary>
+/// <typeparam name="TResult">数据明细类型</typeparam>
+public class PageResult<TResult>
+{
+    /// <summary>
+    /// 构造函数
+    /// </summary>
+    public PageResult()
+    {
+    }
+
+    /// <summary>
+    /// 构造函数
+    /// </summary>
+    /// <param name="request">分页请求对象</param>
+    public PageResult(PageRequest request)
+    {
+        this.PageSize = request.PageSize;
+        this.PageIndex = request.PageIndex;
+    }
+
+    /// <summary>
+    /// 分页大小
+    /// </summary>
+    public int PageSize { get; internal set; }
+
+    /// <summary>
+    /// 数据所在页
+    /// </summary>
+    public int PageIndex { get; internal set; }
+
+    /// <summary>
+    /// 记录总数
+    /// </summary>
+    private long _totalCount = 0;
+
+    /// <summary>
+    /// 总页数
+    /// </summary>
+    public long TotalCount
+    {
+        get { return _totalCount; }
+        internal set
+        {
+            _totalCount = value;
+            if (PageSize * PageIndex > _totalCount)
+            {
+                PageIndex = (int)Math.Ceiling((double)TotalCount / PageSize);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 分页数据
+    /// </summary>
+    public IReadOnlyList<TResult> PageData { get; internal set; }
+}
