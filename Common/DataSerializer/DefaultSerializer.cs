@@ -26,7 +26,7 @@ public class DefaultSerializer : IDataSerializer
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, // JavaScriptEncoder.Create(UnicodeRanges.All)
             PropertyNameCaseInsensitive = true
         };
-        Debug.Assert(data != null, nameof(data) + " != null");
+        //Debug.Assert(data != null, nameof(data) + " != null");
         return JsonSerializer.Serialize(data, data.GetType(), options);
     }
 }

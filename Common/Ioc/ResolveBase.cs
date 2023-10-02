@@ -43,6 +43,11 @@ public abstract class ResolveBase : IResolve
     /// <returns>返回创建成功的命令对象</returns>
     protected virtual ICommand CreateCommand(string name)
     {
-        return _resolveCommandService.Resolve(name);
+        var command = _resolveCommandService.Resolve(name);
+        if (command == null)
+        {
+            throw BusinessException.Create("命令：{0} 没有注册。", (object)name);
+        }
+        return command;
     }
 }
