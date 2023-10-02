@@ -7,7 +7,7 @@
         public void Register_ShouldAddCommandToDictionary()
         {
             // Arrange
-            var resolveCommandService = ResolveCommandService.Instance;
+            var resolveCommandService = ResolveCommandService.CreateResolveCommandService();
             string name = "CommandName_ShouldAddCommand";
             Type targetType = typeof(CommandType);
 
@@ -22,7 +22,7 @@
         public void Resolve_ShouldReturnRegisteredCommand()
         {
             // Arrange
-            var resolveCommandService = ResolveCommandService.Instance;
+            var resolveCommandService = ResolveCommandService.CreateResolveCommandService();
             string name = "CommandName_ShouldReturn";
             Type targetType = typeof(CommandType);
             resolveCommandService.Register(name, targetType);
@@ -39,7 +39,7 @@
         public void Resolve_ShouldThrowException_WhenCommandNameNotRegistered()
         {
             // Arrange
-            var resolveCommandService = ResolveCommandService.Instance;
+            var resolveCommandService = ResolveCommandService.CreateResolveCommandService();
             string name = "NonExistingCommand";
 
             // Act & Assert
@@ -50,8 +50,8 @@
         public void SetResolveCommandService_ShouldThrowException_WhenCalledMoreThanOnce()
         {
             // Arrange
-            var resolveCommandService = ResolveCommandService.Instance;
-            var newResolveCommandService = ResolveCommandService.Instance;
+            var resolveCommandService = ResolveCommandService.CreateResolveCommandService();
+            var newResolveCommandService = ResolveCommandService.CreateResolveCommandService();
             ResolveCommandService.SetResolveCommandService(resolveCommandService);
             // Act & Assert
             Assert.Throws<BusinessException>(() => ResolveCommandService.SetResolveCommandService(newResolveCommandService));

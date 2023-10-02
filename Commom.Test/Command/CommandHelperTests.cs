@@ -8,16 +8,17 @@ namespace MyCloa.Common.Command
     [TestFixture]
     public class CommandHelperTests
     {
+        private static ICommandHelper _commandHelper = new DefaultCommandHelper();
         static CommandHelperTests()
         {
-            CommandHelper.ScanCommand<CommandAttribute, CommandData>(new Assembly[]{Assembly.GetExecutingAssembly()});
+            _commandHelper.ScanCommand<CommandAttribute, CommandData>(new Assembly[]{Assembly.GetExecutingAssembly()});
         }
         [Test]
         public void ScanCommand_Exception()
         {
             Assert.Catch<BusinessException>(() =>
             {
-                CommandHelper.ScanCommand<CommandAttribute, CommandData>(new Assembly[]
+                _commandHelper.ScanCommand<CommandAttribute, CommandData>(new Assembly[]
                     { Assembly.GetExecutingAssembly() });
             });
         }
@@ -29,7 +30,7 @@ namespace MyCloa.Common.Command
             string commandName = "ExistingCommand";
 
             // Act
-            bool result = CommandHelper.CommandValid(commandName);
+            bool result = _commandHelper.CommandValid(commandName);
 
             // Assert
             Assert.IsTrue(result);
@@ -43,7 +44,7 @@ namespace MyCloa.Common.Command
             string commandName = "NonExistingCommand";
 
             // Act
-            bool result = CommandHelper.CommandValid(commandName);
+            bool result = _commandHelper.CommandValid(commandName);
 
             // Assert
             Assert.IsFalse(result);
@@ -57,7 +58,7 @@ namespace MyCloa.Common.Command
             string commandName = "ExistingCommand";
 
             // Act
-            bool result = CommandHelper.ValidAuthentication(commandName);
+            bool result = _commandHelper.ValidAuthentication(commandName);
 
             // Assert
             Assert.IsTrue(result);
@@ -71,7 +72,7 @@ namespace MyCloa.Common.Command
             string commandName = "CommandDoesNotRequireAuthentication";
 
             // Act
-            bool result = CommandHelper.ValidAuthentication(commandName);
+            bool result = _commandHelper.ValidAuthentication(commandName);
 
             // Assert
             Assert.IsFalse(result);
@@ -85,7 +86,7 @@ namespace MyCloa.Common.Command
             string commandName = "ExistingCommand";
 
             // Act
-            bool result = CommandHelper.ValidAuthorization(commandName);
+            bool result = _commandHelper.ValidAuthorization(commandName);
 
             // Assert
             Assert.IsTrue(result);
@@ -99,7 +100,7 @@ namespace MyCloa.Common.Command
             string commandName = "CommandDoesNotRequireAuthorization";
 
             // Act
-            bool result = CommandHelper.ValidAuthorization(commandName);
+            bool result = _commandHelper.ValidAuthorization(commandName);
 
             // Assert
             Assert.IsFalse(result);
@@ -113,7 +114,7 @@ namespace MyCloa.Common.Command
             string commandName = "ExistingCommand";
 
             // Act
-            CommandData result = CommandHelper.GetCommandData<CommandData>(commandName);
+            CommandData result = _commandHelper.GetCommandData<CommandData>(commandName);
 
             // Assert
             Assert.IsNotNull(result);
@@ -130,7 +131,7 @@ namespace MyCloa.Common.Command
             string commandName = "NonExistingCommand";
 
             // Act
-            CommandData result = CommandHelper.GetCommandData<CommandData>(commandName);
+            CommandData result = _commandHelper.GetCommandData<CommandData>(commandName);
 
             // Assert
             Assert.IsNull(result);

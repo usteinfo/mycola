@@ -7,13 +7,33 @@ namespace MyCloa.Common.Ioc;
 /// </summary>
 internal sealed class ResolveCommandService : IResolveCommandService
 {
-    private static readonly IResolveCommandService DefaultResolveCommandService = new ResolveCommandService();
+    private static readonly IResolveCommandService DefaultResolveCommandService = CreateResolveCommandService();
     private static IResolveCommandService _resolveCommandService = null;
+    /// <summary>
+    /// 获取默认服务实例
+    /// </summary>
     public static IResolveCommandService Instance
     {
         get { return _resolveCommandService ?? DefaultResolveCommandService; }
     }
 
+    /// <summary>
+    /// 创建ResolveCommandService实例
+    /// </summary>
+    /// <returns></returns>
+    internal static IResolveCommandService CreateResolveCommandService()
+    {
+        return new ResolveCommandService();
+    }
+
+    /// <summary>
+    /// 清除命令注册服务
+    /// </summary>
+    internal static void ClearResolveCommandService()
+    {
+        _resolveCommandService = null;
+    }
+    
     /// <summary>
     /// 设置默认ResolveCommandService实例
     /// </summary>

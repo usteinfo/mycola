@@ -17,14 +17,18 @@ public sealed class ApiHelper:IApiHelper
     /// 构造函数
     /// </summary>
     /// <param name="resolve">IOC容器</param>
-    public ApiHelper(IResolve resolve)
+    public ApiHelper(IResolve resolve, ICommandHelper commandHelper = null)
     {
         _resolve = resolve;
+        _commandHelper = commandHelper?? new DefaultCommandHelper();
+        
     }
     /// <summary>
     /// IOC容器
     /// </summary>
     private readonly IResolve _resolve;
+
+    private readonly ICommandHelper _commandHelper;
 
     /// <summary>
     /// 处理请求
@@ -66,12 +70,12 @@ public sealed class ApiHelper:IApiHelper
     /// <returns></returns>
     private ResultEntity Invoke<TCommandData>(RequestStringEntity requestStringEntity) where TCommandData:CommandData
     {
-        if (!CommandHelper.CommandValid(requestStringEntity.CommandName))
+        if (!_commandHelper.CommandValid(requestStringEntity.CommandName))
         {
             return ResultEntity.Error(requestStringEntity.RequestId, "接口不存在。");
         }
 
-        if (CommandHelper.ValidAuthentication(requestStringEntity.CommandName))
+        if (_commandHelper.ValidAuthentication(requestStringEntity.CommandName))
         {
             if (!ValidAuthentication<TCommandData>(requestStringEntity))
             {
@@ -124,11 +128,11 @@ public sealed class ApiHelper:IApiHelper
             return false;
         }
 
-        if (CommandHelper.ValidAuthorization(requestStringEntity.CommandName))
+        if (_commandHelper.ValidAuthorization(requestStringEntity.CommandName))
         {
             var authorization = _resolve.Resolve<IAuthorization>();
             if (!authorization.IsAuthorization(requestStringEntity,
-                    CommandHelper.GetCommandData<TCommandData>(requestStringEntity.CommandName)))
+                    _commandHelper.GetCommandData<TCommandData>(requestStringEntity.CommandName)))
             {
                 return false;
             }
