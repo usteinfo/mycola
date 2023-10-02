@@ -11,7 +11,15 @@ public static class CommandHelper
     /// <summary>
     /// 接口字典
     /// </summary>
-    private static readonly Dictionary<string, CommandData> CommandDictoryDictionary = new Dictionary<string, CommandData>();
+    private static readonly Dictionary<string, CommandData> CommandDictoryDictionary =
+        new Dictionary<string, CommandData>();
+
+    /// <summary>
+    /// 初始化是否完成
+    /// </summary>
+    private static bool _isInit = false;
+
+    private static object _lockobject = new object();
 
     /// <summary>
     /// 验证命令是否存在
@@ -22,6 +30,7 @@ public static class CommandHelper
     {
         return CommandDictoryDictionary.ContainsKey(commandName);
     }
+
     /// <summary>
     /// 验证命令是否存在
     /// </summary>
@@ -33,8 +42,10 @@ public static class CommandHelper
         {
             return value.RequestAuthentication;
         }
+
         return false;
     }
+
     /// <summary>
     /// 验证命令是否需要授权
     /// </summary>
@@ -46,6 +57,7 @@ public static class CommandHelper
         {
             return value.RequestAuthorization;
         }
+
         return false;
     }
 
@@ -75,9 +87,32 @@ public static class CommandHelper
         where TCommand : CommandAttribute
         where TCommandData : CommandData, new()
     {
-        foreach (var assembly in assemblies)
+        CheckIsInit<TCommand, TCommandData>();
+
+        lock (_lockobject)
         {
-            ScanCommand(assembly,action);
+            CheckIsInit<TCommand, TCommandData>();
+            foreach (var assembly in assemblies)
+            {
+                ScanCommand(assembly, action);
+            }
+
+            _isInit = true;
+        }
+    }
+
+    /// <summary>
+    /// 检查命令扫描是否已初始化
+    /// </summary>
+    /// <typeparam name="TCommand">命令属性类型</typeparam>
+    /// <typeparam name="TCommandData">命令属性数据</typeparam>
+    /// <exception cref="BusinessException"></exception>
+    private static void CheckIsInit<TCommand, TCommandData>() where TCommand : CommandAttribute
+        where TCommandData : CommandData, new()
+    {
+        if (_isInit)
+        {
+            throw BusinessException.Create("命令注册不能重复初始化。");
         }
     }
 
@@ -86,10 +121,11 @@ public static class CommandHelper
     /// </summary>
     /// <param name="assembly">需要扫描的程序集</param>
     /// <param name="action">命令特性数据处理</param>
-    public static void ScanCommand<TCommand,TCommandData>(Assembly assembly,Func<TCommand, TCommandData, TCommandData>? action = null) where TCommand:CommandAttribute
-        where TCommandData:CommandData,new()
+    private static void ScanCommand<TCommand, TCommandData>(Assembly assembly,
+        Func<TCommand, TCommandData, TCommandData>? action = null) where TCommand : CommandAttribute
+        where TCommandData : CommandData, new()
     {
-        var types =assembly.GetTypes();
+        var types = assembly.GetTypes();
         var commandType = typeof(ICommand);
         var resolveService = ResolveCommandService.Instance;
         foreach (var type in types)
@@ -104,13 +140,13 @@ public static class CommandHelper
                 continue;
             }
 
-            var attribute =  type.GetCustomAttribute<TCommand>();
+            var attribute = type.GetCustomAttribute<TCommand>();
             if (attribute == null)
             {
                 continue;
             }
-            
-            resolveService.Register(attribute.Name,type);
+
+            resolveService.Register(attribute.Name, type);
             TCommandData commandData = new TCommandData
             {
                 CommandType = type,
@@ -121,9 +157,8 @@ public static class CommandHelper
             {
                 commandData = action(attribute, commandData);
             }
-            CommandDictoryDictionary.Add(attribute.Name,commandData);
+
+            CommandDictoryDictionary.Add(attribute.Name, commandData);
         }
     }
-
-    
 }

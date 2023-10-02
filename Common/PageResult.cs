@@ -8,13 +8,27 @@
 public class PageResult<TResult, TSummary> : PageResult<TResult>
 {
     /// <summary>
+    /// 构造函数
+    /// </summary>
+    public PageResult()
+    {
+    }
+
+    /// <summary>
+    /// 构造函数
+    /// </summary>
+    /// <param name="request">分页请求对象</param>
+    public PageResult(PageRequest request):base(request)
+    {
+    }
+    /// <summary>
     /// 是否包括汇总数据
     /// </summary>
-    public bool IncludeSummary { get; internal set; }
+    public bool IncludeSummary { get; set; }
     /// <summary>
     /// 汇总数据
     /// </summary>
-    public TSummary Summary { get; internal set; }
+    public TSummary Summary { get; set; }
 }
 
 /// <summary>
@@ -43,12 +57,12 @@ public class PageResult<TResult>
     /// <summary>
     /// 分页大小
     /// </summary>
-    public int PageSize { get; internal set; }
+    public int PageSize { get; set; }
 
     /// <summary>
     /// 数据所在页
     /// </summary>
-    public int PageIndex { get; internal set; }
+    public int PageIndex { get; set; }
 
     /// <summary>
     /// 记录总数
@@ -61,7 +75,7 @@ public class PageResult<TResult>
     public long TotalCount
     {
         get { return _totalCount; }
-        internal set
+        set
         {
             _totalCount = value;
             if (PageSize * PageIndex > _totalCount)
@@ -74,5 +88,5 @@ public class PageResult<TResult>
     /// <summary>
     /// 分页数据
     /// </summary>
-    public IReadOnlyList<TResult> PageData { get; internal set; }
+    public IReadOnlyList<TResult> PageData { get;  set; }
 }
