@@ -29,6 +29,16 @@ public abstract class RemoteCommandBase:IRemoteCommand
     /// <returns>返回执行结果</returns>
     public async Task<string> Execute(RequestStringEntity requestStringEntity)
     {
+        if (_httpClient == null)
+        {
+            throw new ArgumentNullException("httpClient");
+        }
+
+        if (requestStringEntity == null)
+        {
+            throw new ArgumentNullException(nameof(requestStringEntity));
+        }
+        
         HttpContent httpContent = new StringContent(JsonSerializer.Serialize(requestStringEntity));
         httpContent.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/json");
         
