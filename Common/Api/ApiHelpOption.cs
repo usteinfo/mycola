@@ -39,4 +39,9 @@ public class ApiHelpOption
     /// 服务名称
     /// </summary>
     public string ServerName { get; set; } = "";
+    
+    /// <summary>
+    /// 启用远程命令，如果使用默认远程命令调用方式，需要注入HttpClient
+    /// </summary>
+    public bool EnableRemoteCommand { get; set; }
 }

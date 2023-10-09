@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 using MyCloa.Common.Command;
 using MyCloa.Common.DataSerializer;
 using MyCloa.Common.Ioc;
@@ -38,8 +39,11 @@ public static class ApiHelperExt
             , apiHelpOption.DataSerializerType ?? typeof(DefaultSerializer));
         services.AddTransient(typeof(IValidRequest)
             , apiHelpOption.ValidReqtuestType ?? typeof(ValidationContextRequest));
-        services.AddTransient(typeof(IRemoteCommand)
-            , apiHelpOption.RemoteCommandType ?? typeof(DefaultRemoteCommand));
+        if (apiHelpOption.EnableRemoteCommand)
+        {
+            services.AddTransient(typeof(IRemoteCommand)
+                , apiHelpOption.RemoteCommandType ?? typeof(DefaultRemoteCommand));
+        }
 
         if (apiHelpOption.AuthenticationType != null)
         {
@@ -52,5 +56,34 @@ public static class ApiHelperExt
         }
 
         return services;
+    }
+
+    /// <summary>
+    /// 扫描命令，支持多个程序集中的命令
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="assemblies">待扫描程序集</param>
+    /// <param name="action">命令数据处理</param>
+    /// <typeparam name="TCommand">命令属性类型</typeparam>
+    /// <typeparam name="TCommandData">命令数据类型</typeparam>
+    public static void ScanCommand<TCommand, TCommandData>(this IServiceCollection services,
+        IEnumerable<Assembly> assemblies,
+        Func<TCommand, TCommandData, TCommandData>? action = null)
+        where TCommand : CommandAttribute
+        where TCommandData : CommandData, new()
+    {
+        DefaultCommandHelper.Instance.ScanCommand(assemblies,action);
+    }
+
+    /// <summary>
+    /// 扫描命令，支持多个程序集中的命令
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="assemblies">待扫描程序集</param>
+    /// <param name="action">命令数据处理</param>
+    public static void ScanCommand(this IServiceCollection services, IEnumerable<Assembly> assemblies,
+        Func<CommandAttribute, CommandData, CommandData>? action = null)
+    {
+        ScanCommand<CommandAttribute, CommandData>(services, assemblies, action);
     }
 }
