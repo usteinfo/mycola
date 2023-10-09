@@ -3,8 +3,20 @@ using MyCloa.Common.Ioc;
 
 namespace MyCloa.Common.Command;
 
+/// <summary>
+/// 命令默认辅助实现
+/// </summary>
 public class DefaultCommandHelper : ICommandHelper
 {
+    private static Lazy<DefaultCommandHelper> _defaultCommandHelper =
+        new Lazy<DefaultCommandHelper>(() => new DefaultCommandHelper());
+    private DefaultCommandHelper() {}
+
+    /// <summary>
+    /// 单例对象
+    /// </summary>
+    public static DefaultCommandHelper Instance => _defaultCommandHelper.Value;
+
     /// <summary>
     /// 接口字典
     /// </summary>

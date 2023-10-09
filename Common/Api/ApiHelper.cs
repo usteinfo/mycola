@@ -20,7 +20,7 @@ public sealed class ApiHelper:IApiHelper
     public ApiHelper(IResolve resolve, ICommandHelper commandHelper = null)
     {
         _resolve = resolve;
-        _commandHelper = commandHelper?? new DefaultCommandHelper();
+        _commandHelper = commandHelper?? DefaultCommandHelper.Instance;
         
     }
     /// <summary>

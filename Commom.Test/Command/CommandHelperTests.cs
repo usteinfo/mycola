@@ -8,7 +8,7 @@ namespace MyCloa.Common.Command
     [TestFixture]
     public class CommandHelperTests
     {
-        private static ICommandHelper _commandHelper = new DefaultCommandHelper();
+        private static ICommandHelper _commandHelper = DefaultCommandHelper.Instance;
         static CommandHelperTests()
         {
             _commandHelper.ScanCommand<CommandAttribute, CommandData>(new Assembly[]{Assembly.GetExecutingAssembly()});
