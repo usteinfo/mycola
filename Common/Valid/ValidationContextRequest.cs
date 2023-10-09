@@ -10,6 +10,10 @@ public class ValidationContextRequest : ValidRequestBase
 {
     protected override ValidResult Execute<T>(T requestEntity)
     {
+        if (requestEntity == null)
+        {
+            return new ValidResult(false, "校验对象为null");
+        }
         var context = new ValidationContext(requestEntity, serviceProvider: null, items: null);
         var errorResults = new List<ValidationResult>();
         if (!Validator.TryValidateObject(requestEntity, context, errorResults, true))

@@ -1,4 +1,6 @@
-﻿namespace MyCloa.Common;
+﻿using System.Collections.ObjectModel;
+
+namespace MyCloa.Common;
 
 /// <summary>
 /// 分页结果对象
@@ -28,7 +30,7 @@ public class PageResult<TResult, TSummary> : PageResult<TResult>
     /// <summary>
     /// 汇总数据
     /// </summary>
-    public TSummary Summary { get; set; }
+    public TSummary? Summary { get; set; }
 }
 
 /// <summary>
@@ -88,5 +90,5 @@ public class PageResult<TResult>
     /// <summary>
     /// 分页数据
     /// </summary>
-    public IReadOnlyList<TResult> PageData { get;  set; }
+    public IReadOnlyList<TResult> PageData { get; set; } = new ReadOnlyCollection<TResult>(new List<TResult>());
 }

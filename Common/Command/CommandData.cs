@@ -10,7 +10,7 @@ public class CommandData
     /// <summary>
     /// 命令类型
     /// </summary>
-    public Type CommandType { get; internal set; }
+    public Type? CommandType { get; internal set; }
     /// <summary>
     /// 接口是否启用用户认证
     /// </summary>

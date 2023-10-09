@@ -13,7 +13,7 @@ public class ApiHelpOption
     /// <summary>
     /// IOC容器实现
     /// </summary>
-    public Type ResolveType { get; set; }
+    public Type? ResolveType { get; set; }
 
     /// <summary>
     /// 认证接口实现

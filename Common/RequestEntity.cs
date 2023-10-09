@@ -8,7 +8,7 @@ public class RequestEntity<T>:RequestEntity
     /// <summary>
     /// 请求数据
     /// </summary>
-    public T Data { get; set; }
+    public T? Data { get; set; }
 }
 /// <summary>
 /// 请求命令

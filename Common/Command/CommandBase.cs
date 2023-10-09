@@ -63,7 +63,7 @@ public abstract class CommandBase<TRequest, TResult> : ICommand
     public string Run(RequestStringEntity requestStringEntity)
     {
         _requestStringEntity = requestStringEntity;
-        string request = requestStringEntity.Data;
+        string request = requestStringEntity.Data ?? "";
         if (string.IsNullOrEmpty(request))
         {
             throw new BusinessException("输入参数不能为空。");
@@ -115,7 +115,6 @@ public abstract class CommandBase<TRequest, TResult> : ICommand
         return (T)request.To(typeof(T));
     }
 
-    
 
     /// <summary>
     /// 检验请求参数
