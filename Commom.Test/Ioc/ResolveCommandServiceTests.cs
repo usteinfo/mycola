@@ -52,6 +52,7 @@
             // Arrange
             var resolveCommandService = ResolveCommandService.CreateResolveCommandService();
             var newResolveCommandService = ResolveCommandService.CreateResolveCommandService();
+            ResolveCommandService.ClearResolveCommandService();
             ResolveCommandService.SetResolveCommandService(resolveCommandService);
             // Act & Assert
             Assert.Throws<BusinessException>(() => ResolveCommandService.SetResolveCommandService(newResolveCommandService));
